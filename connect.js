@@ -1,24 +1,23 @@
-var svg, lastX = -1, lastY = -1;
+var svg, circle = true, lastX = -1, lastY = -1;
 
 var setup = function () {
-    /*svg = document.createElement("svg");
-    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    svg.style.width = "500px";
-    svg.style.height = "500px";
-    svg.style.border = "1px dashed #000";
-    svg.addEventListener("click", connectTheDots);
-    document.getElementsByTagName("body")[0].appendChild(svg);*/
     svg = document.getElementById("max");
+    svg.addEventListener("click", connectTheDots);
+    document.getElementById("clear").addEventListener("click", clearSVG);
+    document.getElementById("shape").addEventListener("click", function() {
+        circle = !circle;
+    });
 };
 
 var connectTheDots = function(evt) {
     if(lastY >= 0) {
         svg.appendChild(makeLine(evt.offsetX, evt.offsetY));
     }
-    svg.appendChild(makeCircle(evt.offsetX, evt.offsetY));
+    if(circle == true) {svg.appendChild(makeCircle(evt.offsetX, evt.offsetY));}
+    else {svg.appendChild(makeSquare(evt.offsetX - 10, evt.offsetY - 10));}
     lastX = evt.offsetX;
     lastY = evt.offsetY;
-}
+};
 
 var makeCircle = function(x, y) {
     var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -29,6 +28,16 @@ var makeCircle = function(x, y) {
     return circle;
 };
 
+var makeSquare = function(x, y) {
+    var square = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    square.setAttribute("x", x);
+    square.setAttribute("y", y);
+    square.setAttribute("width", "20");
+    square.setAttribute("height", "20");
+    square.setAttribute("fill", "black");
+    return square;
+};
+
 var makeLine = function(x2, y2) {
     var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     line.setAttribute("x1", lastX);
@@ -37,6 +46,14 @@ var makeLine = function(x2, y2) {
     line.setAttribute("y2", y2);
     line.setAttribute("stroke", "blue");
     return line;
+};
+
+var clearSVG = function() {
+    while(svg.children.length > 0) {
+        svg.children[0].remove();
+    }
+    lastY = -1;
+    lastX = -1;
 };
 
 setup();
